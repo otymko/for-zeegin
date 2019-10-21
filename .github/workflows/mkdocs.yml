@@ -31,7 +31,7 @@ jobs:
       run: |
         mkdir temp
         cp mkdocs.yml temp
-        cp -R docs/. temp
+        cp -R docs/. temp/docs
         rm -rf temp/docs/en
         cd temp
         mkdocs build
@@ -43,11 +43,12 @@ jobs:
 
     - name: Build English
       run: |
+        mkdir temp
         cp mkdocs.en.yml temp/mkdocs.yml
         mkdir temp/docs
         cp -R docs/en/. temp/docs
-        mkdir /temp/docs/assets
-        cp -R /docs/assets/. temp/docs/assets
+        mkdir temp/docs/assets
+        cp -R docs/assets/. temp/docs/assets
         cd temp
         mkdocs build
         cd ..
