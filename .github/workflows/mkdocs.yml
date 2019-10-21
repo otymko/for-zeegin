@@ -1,4 +1,4 @@
-name: github pages
+name: GitHub Pages
 
 on:
   push:
@@ -7,11 +7,7 @@ on:
 
 jobs:
   build-deploy:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest]
+    runs-on: ubuntu-16.04
     steps:
     - uses: actions/checkout@v1
 
@@ -25,12 +21,10 @@ jobs:
       run: |
         pip install --upgrade pip
         pip install mkdocs mkdocs-material pygments-bsl
-
     - name: Prepare
       run: |
         mkdir public
         mkdir public/en
-
     - name: Build Russian
       run: |
         mkdir temp
@@ -41,7 +35,6 @@ jobs:
         mkdocs build
         cd ..
         cp -R temp/site/. public
-
     - name: Clean temp
       run: rm -rf temp
 
@@ -57,7 +50,6 @@ jobs:
         mkdocs build
         cd ..
         cp -R temp/site/. public/en
-
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v2.5.0
       env:
