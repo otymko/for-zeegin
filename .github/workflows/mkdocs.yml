@@ -25,12 +25,12 @@ jobs:
     
     - name: Prepare
       run: |
-        GITHUB_REPOSITORY_NAME=$(echo ${{ github.repository }} | cut -d '/' -f 2)
+        GITHUB_REPOSITORY_NAME=${GITHUB_REPOSITORY#*/}
         wget https://github.com/${{ github.repository }}/archive/gh-pages.zip || true
         unzip gh-pages.zip || true
     
     - name: Save Latest Develop
-      if: github.ref == 'master'
+      if: github.ref == 'refs/heads/master'
       run: |
         mkdir public
         mkdir public/dev
@@ -38,7 +38,7 @@ jobs:
         PUBLIC_TARGET="public"
         
     - name: Save Latest Master
-      if: github.ref == 'develop'
+      if: github.ref == 'refs/heads/develop'
       run: |
         mkdir public
         cp -R ${GITHUB_REPOSITORY_NAME}-gh-pages/. public
