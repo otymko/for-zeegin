@@ -42,6 +42,14 @@ jobs:
         cp -R ${GITHUB_REPOSITORY#*/}-gh-pages/. public
         rm -rf public/dev || true
         mkdir public/dev
+            
+    - name: Patch Develop
+      if: github.ref == 'refs/heads/develop'
+      run: |         
+        sed -i "s%BSL Language Server%BSL Language Server Dev%g" temp/mkdocs.yml
+        sed -i "s%BSL Language Server%BSL Language Server Dev%g" temp/mkdocs.en.yml
+        sed -i "s%https://otymko.github.io/for-zeegin/en%https://otymko.github.io/for-zeegin/dev/en%g" temp/mkdocs.yml
+        sed -i "s%https://otymko.github.io/for-zeegin/%https://otymko.github.io/for-zeegin/dev/%g" temp/mkdocs.en.yml
     
     - name: Build Russian
       run: |
@@ -60,7 +68,6 @@ jobs:
     - name: Public Russian Develop
       if: github.ref == 'refs/heads/develop'
       run: |
-        sed -i "s%BSL Language Server%BSL Language Server Dev%g" temp/mkdocs.yml
         cp -R temp/site/. public/dev
     
     - name: Clean temp
@@ -86,7 +93,6 @@ jobs:
     - name: Public English Develop
       if: github.ref == 'refs/heads/develop'
       run: |
-        sed -i "s%BSL Language Server%BSL Language Server Dev%g" temp/mkdocs.yml
         mkdir public/dev/en
         cp -R temp/site/. public/dev/en
 
