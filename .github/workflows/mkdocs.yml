@@ -60,6 +60,7 @@ jobs:
     - name: Public Russian Develop
       if: github.ref == 'refs/heads/develop'
       run: |
+        sed -i "s%BSL Language Server%BSL Language Server Dev%g" temp/mkdocs.yml
         cp -R temp/site/. public/dev
     
     - name: Clean temp
@@ -85,6 +86,7 @@ jobs:
     - name: Public English Develop
       if: github.ref == 'refs/heads/develop'
       run: |
+        sed -i "s%BSL Language Server%BSL Language Server Dev%g" temp/mkdocs.en.yml
         mkdir public/dev/en
         cp -R temp/site/. public/dev/en
 
