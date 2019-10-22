@@ -4,6 +4,7 @@ on:
   push:
     branches:
     - master
+    - develop
 
 jobs:
   build-deploy:
@@ -21,10 +22,29 @@ jobs:
       run: |
         pip install --upgrade pip
         pip install mkdocs mkdocs-material pygments-bsl
+    
     - name: Prepare
       run: |
+        GITHUB_REPOSITORY_NAME=$(echo ${{ github.repository }} | cut -d '/' -f 2)
+        wget https://github.com/${{ github.repository }}/archive/gh-pages.zip || true
+        unzip gh-pages.zip || true
+    
+    - name: Save Latest Develop
+      if: github.ref == 'master'
+      run: |
         mkdir public
-        mkdir public/en
+        mkdir public/dev
+        cp -R ${GITHUB_REPOSITORY_NAME}-gh-pages/dev. public/dev || true
+        PUBLIC_TARGET="public"
+        
+    - name: Save Latest Master
+      if: github.ref == 'develop'
+      run: |
+        mkdir public
+        cp -R ${GITHUB_REPOSITORY_NAME}-gh-pages/. public
+        rm -rf public/dev || true
+        PUBLIC_TARGET="public/dev"
+    
     - name: Build Russian
       run: |
         mkdir temp
@@ -34,7 +54,7 @@ jobs:
         cd temp
         mkdocs build
         cd ..
-        cp -R temp/site/. public
+        cp -R temp/site/. ${PUBLIC_TARGET}
     - name: Clean temp
       run: rm -rf temp
 
@@ -49,7 +69,9 @@ jobs:
         cd temp
         mkdocs build
         cd ..
-        cp -R temp/site/. public/en
+        mkdir ${PUBLIC_TARGET}/en
+        cp -R temp/site/. ${PUBLIC_TARGET}/en
+
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v2.5.0
       env:
